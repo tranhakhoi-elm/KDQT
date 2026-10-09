@@ -249,11 +249,11 @@ export const CatalogPageItem: React.FC<CatalogPageItemProps> = ({
         </div>
 
         {/* Description (e.g. Includes stockpot, casseroles, saucepan...) */}
-        <div className="text-[11px] text-[#635B53] leading-relaxed pt-0.5">
+        <div className="text-[11px] text-[#635B53] leading-relaxed pt-0.5 line-clamp-2 print:line-clamp-2" title="Mô tả sản phẩm (Tối đa 2 dòng)">
           <EditableText
             value={item.description}
             onChange={(val) => onUpdateItem({ description: val })}
-            placeholder="Mô tả thông số chi tiết của sản phẩm..."
+            placeholder="Mô tả thông số chi tiết của sản phẩm (tối đa 2 dòng)..."
             multiline
           />
         </div>

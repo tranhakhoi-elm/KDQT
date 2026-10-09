@@ -262,16 +262,28 @@ export default function App() {
     }
   };
 
+  // Keyboard shortcut Ctrl+P / Cmd+P to trigger native 100% Vector Print-to-PDF
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "p") {
+        e.preventDefault();
+        handlePrintNative();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   // Native Print-to-PDF matching Ctrl+P 100%
   const handlePrintNative = () => {
-    showToast("Đang mở hộp thoại in. Chọn máy in 'Lưu dưới dạng PDF' (Save as PDF) để lưu vector chuẩn 100%!", "info");
+    showToast("Đang mở hộp thoại in. Chọn Máy in 'Lưu dưới dạng PDF' (Save as PDF) để giữ nguyên 100% font chữ, dãn chữ & tỷ lệ vector!", "info");
     setTimeout(() => {
       window.print();
-    }, 250);
+    }, 200);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#EDE8E0] text-stone-900">
+    <div className="min-h-screen flex flex-col bg-[#EDE8E0] text-stone-900 print:bg-[#FAF7F2] print:min-h-0">
       {/* Top Navigation & Toolbar */}
       <Toolbar
         currentPage={page}
@@ -294,7 +306,7 @@ export default function App() {
       />
 
       {/* Main Workspace Area */}
-      <div className="flex-1 overflow-auto p-4 md:p-8 flex flex-col items-center justify-start">
+      <div className="flex-1 overflow-auto p-4 md:p-8 flex flex-col items-center justify-start print:p-0 print:m-0 print:overflow-hidden print:w-[297mm] print:h-[210mm] app-workspace-container">
         {/* Helper Banner for Users */}
         <div className="no-print max-w-[1100px] w-full mb-4 bg-white/80 backdrop-blur-xs border border-stone-200/80 rounded-xl p-3 px-4 flex flex-wrap items-center justify-between gap-3 text-xs text-stone-600 shadow-2xs">
           <div className="flex items-center gap-2">
@@ -302,7 +314,7 @@ export default function App() {
               <Sparkles className="w-3.5 h-3.5" />
             </span>
             <span>
-              <strong>Chỉnh sửa trực tiếp:</strong> Bạn có thể nhấp chuột vào bất kỳ dòng chữ nào trên trang catalogue bên dưới để gõ sửa nội dung ngay tại chỗ!
+              <strong>Chỉnh sửa trực tiếp:</strong> Bạn có thể nhấp chuột vào bất kỳ dòng chữ nào trên trang catalogue bên dưới để sửa ngay tại chỗ! Nhấn <strong>Ctrl + P</strong> hoặc nút <strong>Lưu PDF (Ctrl+P)</strong> để lưu bản in vector 100% giữ nguyên font chữ & tỷ lệ.
             </span>
           </div>
 

@@ -178,11 +178,11 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             <button
               type="button"
               onClick={onPrintNative}
-              className="px-3.5 py-1.5 text-xs font-semibold bg-stone-900 hover:bg-black text-white rounded-lg shadow-sm flex items-center gap-1.5 transition-all"
-              title="Xuất file PDF giữ nguyên 100% font chữ, khoảng cách dãn chữ, dãn dòng y hệt lệnh Ctrl+P trên trình duyệt (Chọn Lưu dưới dạng PDF)"
+              className="px-4 py-1.5 text-xs font-bold bg-[#E30613] hover:bg-[#c90510] text-white rounded-lg shadow-sm flex items-center gap-1.5 transition-all cursor-pointer ring-2 ring-red-500/20 active:scale-95"
+              title="Lưu PDF giữ nguyên 100% font chữ, độ dãn chữ, dãn dòng và tỷ lệ giống như lệnh Ctrl+P (Chọn Lưu dưới dạng PDF)"
             >
-              <Printer className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Lưu PDF (Chuẩn Ctrl+P / Vector)</span>
+              <Printer className="w-3.5 h-3.5 text-white" />
+              <span>Lưu PDF (Ctrl+P Chuẩn 100%)</span>
             </button>
 
             {/* Secondary: Direct jsPDF 300 DPI file download */}
@@ -191,7 +191,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
               onClick={onExportPdf}
               disabled={isExportingPdf}
               className="px-2.5 py-1.5 text-xs font-medium text-stone-700 bg-stone-100 hover:bg-stone-200 rounded-lg flex items-center gap-1.5 border border-stone-200 transition-colors disabled:opacity-50"
-              title="Tải trực tiếp file PDF Vector 300 DPI về máy tính không qua hộp thoại in"
+              title="Tải trực tiếp file PDF Vector 300 DPI về máy"
             >
               <Download className="w-3.5 h-3.5 text-stone-500" />
               <span className="hidden sm:inline">{isExportingPdf ? "Đang xuất..." : "Tải jsPDF"}</span>

@@ -125,11 +125,11 @@ Context:
 - Collection: "${collectionTitle}"
 - Series / Palette: "${seriesSubtitle}"
 - Item position in catalog: #${itemIndex}
-- Language: ${language === "vi" ? "Vietnamese (Tiếng Việt chuẩn thương mại gia dụng cao cấp)" : "English (International B2B OEM/ODM export catalogue style)"}
+- Language: ${language === "vi" ? "Vietnamese (Tiếng Việt chuẩn thương mại gia dụng cao cấp, ngắn gọn)" : "English (International B2B OEM/ODM export catalogue style, concise)"}
 - Style reference:
-  * Code/Tag format: Short prefix with 2-digit number and specification tag, e.g. "IV-01 • FW26 CORE SET", "TP-05 • MUSHROOM TAUPE", "GY-06 • STONE GREY", "BK-07 • MIDNIGHT SPECKLE"
-  * Title: Elegant cookware finish and feature headline, e.g. "Ivory Speckle, Full Set + Griddle", "Taupe Stone, Soft-Touch Handle", "Grey Stone, Wood-Tone Handle"
-  * Description: Concise 1-2 sentence description highlighting cookware items, finish (granite coating, marble non-stick, forged aluminum, induction base), handle features (faux-wood soft touch, ergonomic), and bundle configuration.
+  * Code/Tag format: Short prefix with 2-digit number and specification tag, e.g. "IV-01 • FW26 CORE SET", "TP-05 • MUSHROOM TAUPE", "GY-06 • STONE GREY"
+  * Title: Elegant cookware finish and feature headline, e.g. "Ivory Speckle, Full Set + Griddle", "Taupe Stone, Soft-Touch Handle"
+  * Description: BẮT BUỘC TỐI ĐA 2 DÒNG (dưới 14 từ). Rất ngắn gọn về bộ nồi chảo (chất liệu nhôm đúc, chống dính vân đá, tay cầm cách nhiệt), tuyệt đối không viết dài quá 2 dòng.
 
 Return JSON matching this schema:
 {
@@ -151,7 +151,7 @@ Return JSON matching this schema:
           properties: {
             code: { type: Type.STRING, description: "Item code and version tag" },
             title: { type: Type.STRING, description: "Cookware product headline" },
-            description: { type: Type.STRING, description: "Cookware features and set components" },
+            description: { type: Type.STRING, description: "Tối đa 2 dòng (dưới 14 từ) mô tả sản phẩm" },
           },
           required: ["code", "title", "description"],
         },
@@ -252,17 +252,17 @@ Examine all ${activeItems.length} cookware images together.
 Compute and generate the ENTIRE catalogue page content so everything harmonizes with the uploaded cookware photos:
 1. Dòng sản phẩm (Series subtitle): Uppercase tracking title specifying the series materials and palette (e.g. "WOOD-HANDLE GRANITE SERIES — NEUTRAL PALETTE" or "CERAMIC NON-STICK SERIES — NORDIC PALETTE").
 2. Tên Bộ Sưu Tập (Collection title): Elegant 2-4 word title for this cookware collection (e.g. "Ivory Stone Collection" or "Taupe, Grey & Black Stone").
-3. Mô tả đầu trang (Header description): Exactly 1-2 concise sentences (under 30 words) describing the non-stick coating, handle architecture, lid specifications, and pack configurations, matching the exact Elmich demo style:
-   Reference: "Marble-finish non-stick coating in warm ivory, paired with faux-wood soft-touch handles and tempered glass lids. Shown in four styling options / pack configurations."
+3. Mô tả đầu trang (Header description): BẮT BUỘC TỐI ĐA 2 DÒNG (dưới 18 từ) mô tả chất liệu và cấu hình đóng gói:
+   Ví dụ mẫu: "Lớp chống dính vân đá tự nhiên, tay cầm vân gỗ cách nhiệt êm ái cùng nắp kính cường lực chịu nhiệt."
 4. Cho từng ảnh (Items 1 to ${count}):
    Generate exactly ${count} matching items corresponding to each image in sequence:
-   - "code": Sequential code with prefix and 2-digit number + edition tag (e.g. "IV-01 • FW26 CORE SET", "IV-02 • UTENSIL EDITION", "IV-03 • CLEAN LOGO-FREE", "IV-04 • COPPER INTERIOR" or "TP-05 • MUSHROOM TAUPE", "GY-06 • STONE GREY", "BK-07 • MIDNIGHT SPECKLE").
+   - "code": Sequential code with prefix and 2-digit number + edition tag (e.g. "IV-01 • FW26 CORE SET", "IV-02 • UTENSIL EDITION", "TP-05 • MUSHROOM TAUPE", "GY-06 • STONE GREY").
    - "title": Very concise product headline (3-5 words) specifying the finish/color and configuration (e.g. "Ivory Speckle, Full Set + Griddle" or "Taupe Stone, Soft-Touch Handle").
-   - "description": Exactly 1 concise sentence (8-15 words) listing the cookware pieces or standout finish (e.g. "Includes stockpot, casseroles, saucepan, fry pans and square griddle." or "Warm taupe finish with matching soft-touch handles and knobs.").
+   - "description": BẮT BUỘC TỐI ĐA 2 DÒNG (dưới 12-14 từ). Rất ngắn gọn nêu thành phần bộ nồi chảo (ví dụ: "Bao gồm nồi canh, chảo rán, quánh bột và vỉ nướng vuông." hoặc "Chất liệu nhôm đúc phủ chống dính vân đá tự nhiên siêu bền."). Tuyệt đối không viết dài quá 2 dòng.
    - "spotDotColor": Hex color code matching the primary color swatch of this item (e.g. "#f3ede3", "#a3988c", "#7f7f7f", "#2b2b2b", "#b87333").
 
-Language: ${language === "vi" ? "Tiếng Việt (chuẩn thương mại xuất khẩu gia dụng Elmich, ngắn gọn, súc tích)" : "English (International B2B OEM/ODM export catalogue style)"}
-Crucial rule: Keep all texts CONCISE and focused strictly on cookware (nồi, chảo, quánh, xửng, tay cầm, lớp chống dính đá). Do not write overly long paragraphs.
+Language: ${language === "vi" ? "Tiếng Việt (chuẩn thương mại xuất khẩu gia dụng Elmich, ngắn gọn, súc tích)" : "English (International B2B OEM/ODM export catalogue style, strictly concise)"}
+Crucial rule: BẮT BUỘC tất cả các phần mô tả (cả headerDescription và description từng sản phẩm) CHỈ ĐƯỢC TỐI ĐA 2 DÒNG (dưới 14 từ). Không viết dài dòng.
 
 Return JSON:
 {
@@ -292,7 +292,7 @@ Return JSON:
           properties: {
             seriesSubtitle: { type: Type.STRING },
             collectionTitle: { type: Type.STRING },
-            headerDescription: { type: Type.STRING },
+            headerDescription: { type: Type.STRING, description: "Tối đa 2 dòng (dưới 18 từ)" },
             items: {
               type: Type.ARRAY,
               items: {
@@ -300,7 +300,7 @@ Return JSON:
                 properties: {
                   code: { type: Type.STRING },
                   title: { type: Type.STRING },
-                  description: { type: Type.STRING },
+                  description: { type: Type.STRING, description: "Tối đa 2 dòng (dưới 14 từ)" },
                   spotDotColor: { type: Type.STRING },
                 },
                 required: ["code", "title", "description"],
@@ -390,7 +390,7 @@ Language: ${language === "vi" ? "Tiếng Việt" : "English"}
 Requirements:
 - Sequential numbering for item codes (e.g. prefix based on collection, like IV-01, IV-02, IV-03, IV-04 or TP-05, GY-06, BK-07).
 - Each item should highlight different finishes, configurations, or handle types (e.g., Full Set + Griddle, Utensil Edition, Clean Logo-Free, Copper Interior, Soft-Touch Handle).
-- Descriptions should be concise, professional, and suited for high-end retail/OEM presentation.
+- BẮT BUỘC: Descriptions TỐI ĐA 2 DÒNG (dưới 12-14 từ). Rất ngắn gọn, súc tích, chuẩn catalogue nồi chảo xuất khẩu.
 
 Return JSON format:
 {
@@ -421,7 +421,7 @@ Return JSON format:
                 properties: {
                   code: { type: Type.STRING },
                   title: { type: Type.STRING },
-                  description: { type: Type.STRING },
+                  description: { type: Type.STRING, description: "Tối đa 2 dòng (dưới 14 từ)" },
                 },
                 required: ["code", "title", "description"],
               },
@@ -504,7 +504,7 @@ Language: ${language === "vi" ? "Tiếng Việt" : "English"}.
 Style references:
 - Subtitle: Uppercase tracking series name, e.g. "WOOD-HANDLE GRANITE SERIES — NEUTRAL PALETTE"
 - Title: Serif luxury title, e.g. "Ivory Stone Collection" or "Taupe, Grey & Black Stone"
-- Description: 2-line technical & aesthetic summary, e.g. "Marble-finish non-stick coating in warm ivory, paired with faux-wood soft-touch handles and tempered glass lids. Shown in four styling options / pack configurations."
+- Description: BẮT BUỘC TỐI ĐA 2 DÒNG (dưới 18 từ), ví dụ: "Lớp chống dính vân đá tự nhiên, tay cầm vân gỗ cách nhiệt êm ái cùng nắp kính cường lực chịu nhiệt."
 `,
       config: {
         responseMimeType: "application/json",
@@ -513,7 +513,7 @@ Style references:
           properties: {
             seriesSubtitle: { type: Type.STRING },
             collectionTitle: { type: Type.STRING },
-            headerDescription: { type: Type.STRING },
+            headerDescription: { type: Type.STRING, description: "Tối đa 2 dòng (dưới 18 từ)" },
           },
           required: ["seriesSubtitle", "collectionTitle", "headerDescription"],
         },
@@ -530,7 +530,7 @@ Style references:
         data: {
           seriesSubtitle: "DÒNG NỒI CHẢO NHÔM ĐÚC VÂN ĐÁ — BỘ SƯU TẬP CAO CẤP",
           collectionTitle: topic.length > 5 ? topic : "Bộ Sưu Tập Royal Stone",
-          headerDescription: "Chất liệu nhôm đúc nguyên khối phủ chống dính vân đá tự nhiên siêu bền, tay cầm vân gỗ cách nhiệt êm ái cùng nắp kính cường lực chịu nhiệt cao cấp.",
+          headerDescription: "Lớp chống dính vân đá tự nhiên siêu bền, tay cầm vân gỗ êm ái và nắp kính chịu nhiệt.",
         },
       });
     }
@@ -540,7 +540,7 @@ Style references:
       data: {
         seriesSubtitle: "WOOD-HANDLE FORGED GRANITE SERIES — EXPORT EDITION",
         collectionTitle: topic.length > 5 ? topic : "Royal Granite Collection",
-        headerDescription: "Marble-finish non-stick coating in premium neutral tones, paired with faux-wood soft-touch handles and tempered glass lids. Engineered for modern OEM/ODM cookware programmes.",
+        headerDescription: "Marble-finish non-stick coating with soft-touch faux-wood handles and tempered glass lids.",
       },
     });
   }
@@ -561,8 +561,11 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-app.listen(port, "0.0.0.0", () => {
-  console.log(`Elmich Catalog Studio server running on http://0.0.0.0:${port}`);
-});
+// Start HTTP server only if not running inside Vercel serverless environment
+if (!process.env.VERCEL) {
+  app.listen(port, "0.0.0.0", () => {
+    console.log(`Elmich Catalog Studio server running on http://0.0.0.0:${port}`);
+  });
+}
 
 export default app;

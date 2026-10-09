@@ -71,6 +71,7 @@
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
+    box-sizing: border-box !important;
   }
 
   html, body {
@@ -79,26 +80,34 @@
     margin: 0 !important;
     width: 297mm !important;
     height: 210mm !important;
+    max-width: 297mm !important;
+    max-height: 210mm !important;
     overflow: hidden !important;
   }
 
-  #root, #root > div {
+  #root, #root > div, #root > div > div, .app-workspace-container {
     background-color: #FAF7F2 !important;
     padding: 0 !important;
     margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
     min-height: 0 !important;
     height: 210mm !important;
+    width: 297mm !important;
+    max-height: 210mm !important;
+    overflow: hidden !important;
   }
 
-  .no-print {
+  .no-print, [data-no-print="true"] {
     display: none !important;
+    visibility: hidden !important;
   }
 
   .print-page {
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
-    margin: 0 auto !important;
+    margin: 0 !important;
     width: 297mm !important;
     height: 210mm !important;
     min-height: 210mm !important;
@@ -109,7 +118,9 @@
     background-color: #FAF7F2 !important;
     page-break-after: avoid !important;
     page-break-inside: avoid !important;
+    page-break-before: avoid !important;
     break-inside: avoid !important;
+    break-after: avoid !important;
     overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;

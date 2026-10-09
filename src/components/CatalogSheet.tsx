@@ -84,11 +84,11 @@ export const CatalogSheet: React.FC<CatalogSheetProps> = ({
             </div>
 
             {/* Top right description summary */}
-            <p className="text-[11px] text-[#6E665D] leading-relaxed max-w-sm font-normal">
+            <p className="text-[11px] text-[#6E665D] leading-relaxed max-w-sm font-normal line-clamp-2 print:line-clamp-2" title="Mô tả bộ sưu tập (Tối đa 2 dòng)">
               <EditableText
                 value={page.headerDescription}
                 onChange={(val) => onUpdatePage({ headerDescription: val })}
-                placeholder="Mô tả kỹ thuật và chất liệu hoàn thiện của bộ sưu tập..."
+                placeholder="Mô tả kỹ thuật và chất liệu hoàn thiện (tối đa 2 dòng)..."
                 multiline
               />
             </p>
