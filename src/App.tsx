@@ -4,14 +4,16 @@ import { INITIAL_PAGES, SAMPLE_COOKWARE_LIBRARY } from "./data/defaultCatalog";
 import { Toolbar } from "./components/Toolbar";
 import { CatalogSheet } from "./components/CatalogSheet";
 import { ImagePickerModal } from "./components/ImagePickerModal";
+import { ImageAdjustModal } from "./components/ImageAdjustModal";
 import { QuickEditorDrawer } from "./components/QuickEditorDrawer";
 import { AiHeaderModal } from "./components/AiHeaderModal";
 import { exportCatalogToVectorPdf } from "./utils/pdfVectorExport";
-import { CheckCircle2, Sparkles, AlertCircle, Info, Edit3, ImagePlus } from "lucide-react";
+import { CheckCircle2, Sparkles, AlertCircle, Info, Edit3, ImagePlus, Crop } from "lucide-react";
 
 export default function App() {
-  const [pages, setPages] = useState<CatalogPage[]>(() => {
-    const saved = localStorage.getItem("elmich_catalog_pages");
+  // Single page state (multi-page temporarily disabled per user request)
+  const [page, setPage] = useState<CatalogPage>(() => {
+    const saved = localStorage.getItem("elmich_catalog_single_page");
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -19,15 +21,16 @@ export default function App() {
         console.error("Failed to parse saved catalog", e);
       }
     }
-    return INITIAL_PAGES;
+    return INITIAL_PAGES[0];
   });
 
-  const [activePageIndex, setActivePageIndex] = useState<number>(0);
   const [language, setLanguage] = useState<"en" | "vi">("en");
 
   // Modals & Drawers state
   const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
   const [targetItemIndex, setTargetItemIndex] = useState<number>(0);
+  const [isCropModalOpen, setIsCropModalOpen] = useState(false);
+  const [activeCropItemIndex, setActiveCropItemIndex] = useState<number>(0);
   const [isQuickEditorOpen, setIsQuickEditorOpen] = useState(false);
   const [isAiHeaderModalOpen, setIsAiHeaderModalOpen] = useState(false);
 
@@ -54,134 +57,55 @@ export default function App() {
 
   // Sync with localStorage
   useEffect(() => {
-    localStorage.setItem("elmich_catalog_pages", JSON.stringify(pages));
-  }, [pages]);
-
-  const currentPage = pages[activePageIndex] || pages[0];
+    localStorage.setItem("elmich_catalog_single_page", JSON.stringify(page));
+  }, [page]);
 
   // Update current page fields
-  const handleUpdateCurrentPage = (updated: Partial<CatalogPage>) => {
-    setPages((prev) => {
-      const next = [...prev];
-      next[activePageIndex] = { ...next[activePageIndex], ...updated };
-      return next;
-    });
+  const handleUpdatePage = (updated: Partial<CatalogPage>) => {
+    setPage((prev) => ({ ...prev, ...updated }));
   };
 
   // Switch Layout (3 vs 4 images)
   const handleSetLayout = (newLayout: CatalogLayout) => {
-    if (currentPage.layout === newLayout) return;
+    if (page.layout === newLayout) return;
 
-    let items = [...currentPage.items];
+    let items = [...page.items];
     if (newLayout === 4 && items.length < 4) {
       // Append a 4th default item if needed
       items.push({
-        id: `item-${currentPage.id}-4`,
+        id: `item-${page.id}-4`,
         image: SAMPLE_COOKWARE_LIBRARY[3]?.url || SAMPLE_COOKWARE_LIBRARY[0].url,
         code: "IV-04 • COPPER INTERIOR",
         title: "Ivory Body, Copper-Tone Interior",
         description: "Ivory exterior finished with a warm copper-tone non-stick interior.",
         showSpotDot: true,
         spotDotColor: "#b87333",
+        zoom: 1.0,
+        panX: 0,
+        panY: 0,
+        fitMode: "cover",
       });
     }
 
-    handleUpdateCurrentPage({
+    handleUpdatePage({
       layout: newLayout,
       items,
     });
     showToast(`Đã chuyển sang bố cục ${newLayout} hình ảnh`);
   };
 
-  // Add new page
-  const handleAddPage = () => {
-    const newPageNum = String(pages.length + 2).padStart(2, "0");
-    const newPage: CatalogPage = {
-      id: `page-${Date.now()}`,
-      name: `Bộ Sưu Tập Mới (Trang ${pages.length + 1})`,
-      layout: 4,
-      seriesSubtitle: "WOOD-HANDLE GRANITE SERIES — NEUTRAL PALETTE",
-      collectionTitle: "Contemporary Kitchen Collection",
-      headerDescription: "Premium granite-coated cookware crafted for modern culinary spaces. Engineered with ergonomic handles and high-performance non-stick surfaces.",
-      footerLeft: "ELMICH JSC • A LEADING COOKWARE MANUFACTURER IN VIETNAM",
-      footerCenter: "CONTEMPORARY KITCHEN COLLECTION",
-      footerPageNumber: newPageNum,
-      items: [
-        {
-          id: `item-${Date.now()}-1`,
-          image: SAMPLE_COOKWARE_LIBRARY[0].url,
-          code: "CK-01 • CORE SET",
-          title: "Granite Stone Full Cookware Set",
-          description: "Includes stockpot, saucepan and frying pan with glass lids.",
-          showSpotDot: true,
-          spotDotColor: "#e8ded2",
-        },
-        {
-          id: `item-${Date.now()}-2`,
-          image: SAMPLE_COOKWARE_LIBRARY[1].url,
-          code: "CK-02 • UTENSIL EDITION",
-          title: "Natural Wood Utensil Bundle",
-          description: "Cookware set accompanied by heat-resistant utensils.",
-          showSpotDot: true,
-          spotDotColor: "#f3ede3",
-        },
-        {
-          id: `item-${Date.now()}-3`,
-          image: SAMPLE_COOKWARE_LIBRARY[2].url,
-          code: "CK-03 • CASSEROLE EDITION",
-          title: "Deep Casserole with Soft Handles",
-          description: "Forged aluminum body with induction-ready base.",
-          showSpotDot: true,
-          spotDotColor: "#a3988c",
-        },
-        {
-          id: `item-${Date.now()}-4`,
-          image: SAMPLE_COOKWARE_LIBRARY[3].url,
-          code: "CK-04 • COPPER TONE",
-          title: "Copper Accent Frying Skillet",
-          description: "Warm copper-tone interior with anti-scratch coating.",
-          showSpotDot: true,
-          spotDotColor: "#b87333",
-        },
-      ],
-    };
-
-    setPages((prev) => [...prev, newPage]);
-    setActivePageIndex(pages.length);
-    showToast("Đã tạo thêm trang catalogue mới!");
+  // Switch between presets (Ivory Stone 4 photos vs Taupe & Black 3 photos)
+  const handleSelectPreset = (presetIndex: number) => {
+    const template = INITIAL_PAGES[presetIndex] || INITIAL_PAGES[0];
+    setPage(JSON.parse(JSON.stringify(template)));
+    showToast(`Đã nạp mẫu: ${template.name}`);
   };
 
-  // Duplicate page
-  const handleDuplicatePage = () => {
-    const duplicated: CatalogPage = {
-      ...JSON.parse(JSON.stringify(currentPage)),
-      id: `page-${Date.now()}`,
-      name: `${currentPage.name} (Bản sao)`,
-      footerPageNumber: String(pages.length + 2).padStart(2, "0"),
-    };
-    setPages((prev) => [...prev, duplicated]);
-    setActivePageIndex(pages.length);
-    showToast("Đã nhân bản trang thành công!");
-  };
-
-  // Delete page
-  const handleDeletePage = () => {
-    if (pages.length <= 1) {
-      showToast("Catalogue cần có ít nhất 1 trang.", "error");
-      return;
-    }
-    const nextPages = pages.filter((_, idx) => idx !== activePageIndex);
-    setPages(nextPages);
-    setActivePageIndex(Math.max(0, activePageIndex - 1));
-    showToast("Đã xóa trang.");
-  };
-
-  // Reset to original 2 demo pages
+  // Reset to original demo
   const handleResetDefaults = () => {
-    if (window.confirm("Bạn có chắc chắn muốn khôi phục lại 2 trang demo mẫu ban đầu không?")) {
-      setPages(INITIAL_PAGES);
-      setActivePageIndex(0);
-      showToast("Đã khôi phục 2 trang demo ban đầu.");
+    if (window.confirm("Bạn có chắc chắn muốn khôi phục lại trang demo mẫu ban đầu không?")) {
+      setPage(JSON.parse(JSON.stringify(INITIAL_PAGES[0])));
+      showToast("Đã khôi phục trang demo ban đầu.");
     }
   };
 
@@ -191,17 +115,48 @@ export default function App() {
     setIsImagePickerOpen(true);
   };
 
+  // Open Crop & Zoom Modal
+  const handleRequestCropAdjust = (itemIdx: number) => {
+    setActiveCropItemIndex(itemIdx);
+    setIsCropModalOpen(true);
+  };
+
+  // Apply Crop & Zoom adjustment to item
+  const handleApplyCropAdjustment = (adjustment: {
+    zoom: number;
+    panX: number;
+    panY: number;
+    fitMode: "cover" | "contain";
+  }) => {
+    const updatedItems = [...page.items];
+    if (updatedItems[activeCropItemIndex]) {
+      updatedItems[activeCropItemIndex] = {
+        ...updatedItems[activeCropItemIndex],
+        zoom: adjustment.zoom,
+        panX: adjustment.panX,
+        panY: adjustment.panY,
+        fitMode: adjustment.fitMode,
+      };
+      handleUpdatePage({ items: updatedItems });
+      showToast("Đã lưu căn chỉnh Crop & Zoom cho hình ảnh!");
+    }
+  };
+
   // Apply new image and optional AI suggested text
   const handleApplyImageAndText = (
     newImage: string,
     suggestedText?: { code: string; title: string; description: string }
   ) => {
-    const updatedItems = [...currentPage.items];
+    const updatedItems = [...page.items];
     const currentItem = updatedItems[targetItemIndex];
 
     updatedItems[targetItemIndex] = {
       ...currentItem,
       image: newImage,
+      zoom: 1.0,
+      panX: 0,
+      panY: 0,
+      fitMode: "cover",
       ...(suggestedText
         ? {
             code: suggestedText.code,
@@ -211,7 +166,7 @@ export default function App() {
         : {}),
     };
 
-    handleUpdateCurrentPage({ items: updatedItems });
+    handleUpdatePage({ items: updatedItems });
     showToast(
       suggestedText
         ? "Đã cập nhật ảnh và điền thông số do AI gợi ý!"
@@ -223,14 +178,14 @@ export default function App() {
   const handleTriggerBatchAi = async () => {
     setIsBatchAiLoading(true);
     try {
-      const activeItems = currentPage.items.slice(0, currentPage.layout);
+      const activeItems = page.items.slice(0, page.layout);
 
       const response = await fetch("/api/ai/suggest-full-page", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: activeItems,
-          layout: currentPage.layout,
+          layout: page.layout,
           language,
         }),
       });
@@ -244,7 +199,7 @@ export default function App() {
           items: aiItems,
         } = resData.data;
 
-        const newItems = [...currentPage.items];
+        const newItems = [...page.items];
         if (Array.isArray(aiItems)) {
           aiItems.forEach((aiItem: any, idx: number) => {
             if (newItems[idx]) {
@@ -260,12 +215,12 @@ export default function App() {
           });
         }
 
-        const newCollectionTitle = collectionTitle || currentPage.collectionTitle;
+        const newCollectionTitle = collectionTitle || page.collectionTitle;
 
-        handleUpdateCurrentPage({
-          seriesSubtitle: seriesSubtitle || currentPage.seriesSubtitle,
+        handleUpdatePage({
+          seriesSubtitle: seriesSubtitle || page.seriesSubtitle,
           collectionTitle: newCollectionTitle,
-          headerDescription: headerDescription || currentPage.headerDescription,
+          headerDescription: headerDescription || page.headerDescription,
           footerCenter: newCollectionTitle.toUpperCase(),
           items: newItems,
         });
@@ -290,8 +245,8 @@ export default function App() {
     setExportProgress({ percent: 5, message: "Đang tạo tài liệu PDF Vector chuẩn thiết kế (300 DPI)..." });
 
     try {
-      await exportCatalogToVectorPdf(pages, {
-        fileName: `Elmich_Catalogue_${currentPage.collectionTitle.replace(/\s+/g, "_")}_Vector.pdf`,
+      await exportCatalogToVectorPdf(page, {
+        fileName: `Elmich_Catalogue_${page.collectionTitle.replace(/\s+/g, "_")}_300DPI_Vector.pdf`,
         onProgress: (percent, message) => {
           setExportProgress({ percent, message });
         },
@@ -316,18 +271,12 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-[#EDE8E0] text-stone-900">
       {/* Top Navigation & Toolbar */}
       <Toolbar
-        currentPage={currentPage}
-        totalPages={pages.length}
-        currentPageIndex={activePageIndex}
-        pages={pages}
+        currentPage={page}
         language={language}
         isExportingPdf={isExportingPdf}
         exportProgress={exportProgress}
-        onSelectPage={(idx) => setActivePageIndex(idx)}
         onSetLayout={handleSetLayout}
-        onAddPage={handleAddPage}
-        onDuplicatePage={handleDuplicatePage}
-        onDeletePage={handleDeletePage}
+        onSelectPreset={handleSelectPreset}
         onSetLanguage={(lang) => {
           setLanguage(lang);
           showToast(`Đã chuyển ngôn ngữ AI sang: ${lang === "en" ? "Tiếng Anh (Export)" : "Tiếng Việt"}`);
@@ -356,47 +305,32 @@ export default function App() {
 
           <div className="flex items-center gap-3 text-[11px] font-medium text-stone-500">
             <span className="flex items-center gap-1">
+              <Crop className="w-3.5 h-3.5 text-red-500" />
+              Công cụ Crop & Zoom tự động cho từng ảnh
+            </span>
+            <span className="hidden sm:inline">•</span>
+            <span className="flex items-center gap-1">
               <ImagePlus className="w-3.5 h-3.5 text-stone-400" />
               Rê chuột vào ảnh để đổi ảnh hoặc nhờ AI gợi ý
             </span>
             <span className="hidden sm:inline">•</span>
             <span className="flex items-center gap-1">
               <Edit3 className="w-3.5 h-3.5 text-stone-400" />
-              Chân trang & Logo được cố định đúng chuẩn Elmich
+              Giữ nguyên tỷ lệ khoảng cách chân trang & logo
             </span>
           </div>
         </div>
 
-        {/* Visible Active Catalog Sheet */}
+        {/* Visible Single Catalog Sheet */}
         <div className="w-full flex justify-center py-2">
           <CatalogSheet
-            page={currentPage}
-            pageIndex={activePageIndex}
+            page={page}
+            pageIndex={0}
             language={language}
-            onUpdatePage={handleUpdateCurrentPage}
+            onUpdatePage={handleUpdatePage}
             onRequestImageChange={handleRequestImageChange}
+            onRequestCropAdjust={handleRequestCropAdjust}
           />
-        </div>
-
-        {/* Offscreen & Print Container for all pages (NO duplicate IDs in DOM) */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed -left-[9999px] top-0 overflow-hidden w-[1100px] print:static print:pointer-events-auto print:overflow-visible print:w-full print:block"
-        >
-          {pages.map((p, idx) => {
-            if (idx === activePageIndex) return null; // Already rendered and visible in DOM
-            return (
-              <div key={`page-render-${p.id}`} className="mb-8 print:mb-0 print:break-after-page">
-                <CatalogSheet
-                  page={p}
-                  pageIndex={idx}
-                  language={language}
-                  onUpdatePage={() => {}}
-                  onRequestImageChange={() => {}}
-                />
-              </div>
-            );
-          })}
         </div>
       </div>
 
@@ -420,25 +354,31 @@ export default function App() {
       <ImagePickerModal
         isOpen={isImagePickerOpen}
         onClose={() => setIsImagePickerOpen(false)}
-        item={currentPage.items[targetItemIndex] || currentPage.items[0]}
+        item={page.items[targetItemIndex] || page.items[0]}
         itemIndex={targetItemIndex}
-        collectionTitle={currentPage.collectionTitle}
-        seriesSubtitle={currentPage.seriesSubtitle}
+        collectionTitle={page.collectionTitle}
+        seriesSubtitle={page.seriesSubtitle}
         language={language}
         onApplyImageAndText={handleApplyImageAndText}
+      />
+
+      <ImageAdjustModal
+        isOpen={isCropModalOpen}
+        onClose={() => setIsCropModalOpen(false)}
+        item={page.items[activeCropItemIndex] || page.items[0]}
+        itemIndex={activeCropItemIndex}
+        layout={page.layout}
+        onApplyAdjustment={handleApplyCropAdjustment}
       />
 
       <QuickEditorDrawer
         isOpen={isQuickEditorOpen}
         onClose={() => setIsQuickEditorOpen(false)}
-        currentPage={currentPage}
-        pageIndex={activePageIndex}
-        totalPages={pages.length}
-        onUpdatePage={handleUpdateCurrentPage}
-        onDuplicatePage={handleDuplicatePage}
-        onDeletePage={handleDeletePage}
+        currentPage={page}
+        onUpdatePage={handleUpdatePage}
         onResetDefaults={handleResetDefaults}
         onRequestImageChange={handleRequestImageChange}
+        onRequestCropAdjust={handleRequestCropAdjust}
       />
 
       <AiHeaderModal
@@ -446,7 +386,7 @@ export default function App() {
         onClose={() => setIsAiHeaderModalOpen(false)}
         language={language}
         onApplyHeader={(newHeader) => {
-          handleUpdateCurrentPage(newHeader);
+          handleUpdatePage(newHeader);
           showToast("Đã cập nhật tiêu đề và mô tả bộ sưu tập mới từ AI!");
         }}
       />

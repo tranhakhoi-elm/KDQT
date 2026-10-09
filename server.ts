@@ -16,6 +16,38 @@ const port = 3000;
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+// Serve local fonts with correct MIME type
+app.use("/fonts", express.static(path.join(__dirname, "public/fonts"), {
+  setHeaders: (res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", "font/ttf");
+    res.setHeader("Cache-Control", "public, max-age=31536000");
+  },
+}));
+
+// Proxy endpoint for external images to prevent canvas CORS taint during 300 DPI crop
+app.get("/api/proxy-image", async (req, res) => {
+  const imageUrl = req.query.url as string;
+  if (!imageUrl) {
+    return res.status(400).send("Missing url parameter");
+  }
+  try {
+    const fetchRes = await fetch(imageUrl);
+    if (!fetchRes.ok) {
+      return res.status(fetchRes.status).send("Failed to fetch image");
+    }
+    const contentType = fetchRes.headers.get("content-type") || "image/jpeg";
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    const arrayBuffer = await fetchRes.arrayBuffer();
+    return res.send(Buffer.from(arrayBuffer));
+  } catch (err: any) {
+    console.error("Proxy error:", err);
+    return res.status(500).send(err.message || "Failed to proxy image");
+  }
+});
+
 // Server-side Google GenAI initialization
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,

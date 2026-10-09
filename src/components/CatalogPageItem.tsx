@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ProductItem } from "../types";
 import { EditableText } from "./EditableText";
-import { Camera, Sparkles, CircleDot, Palette } from "lucide-react";
+import { Camera, Sparkles, CircleDot, Crop, Move } from "lucide-react";
 
 interface CatalogPageItemProps {
   item: ProductItem;
@@ -12,6 +12,7 @@ interface CatalogPageItemProps {
   language: "en" | "vi";
   onUpdateItem: (updated: Partial<ProductItem>) => void;
   onRequestImageChange: () => void;
+  onRequestCropAdjust: () => void;
 }
 
 export const CatalogPageItem: React.FC<CatalogPageItemProps> = ({
@@ -23,9 +24,21 @@ export const CatalogPageItem: React.FC<CatalogPageItemProps> = ({
   language,
   onUpdateItem,
   onRequestImageChange,
+  onRequestCropAdjust,
 }) => {
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
+
+  const zoom = item.zoom || 1.0;
+  const panX = item.panX || 0;
+  const panY = item.panY || 0;
+  const fitMode = item.fitMode || "cover";
+
+  const imageTransformStyle: React.CSSProperties = {
+    transform: `scale(${zoom}) translate(${-panX / zoom}%, ${-panY / zoom}%)`,
+    transformOrigin: "center center",
+    objectFit: fitMode,
+  };
 
   const handleGenerateAiText = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -80,10 +93,11 @@ export const CatalogPageItem: React.FC<CatalogPageItemProps> = ({
         <img
           src={item.image}
           alt={item.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+          className="w-full h-full transition-transform duration-200"
+          style={imageTransformStyle}
         />
 
-        {/* Circular Accent Dot / Colorway Swatch (as featured on the original Elmich page) */}
+        {/* Circular Accent Dot / Colorway Swatch */}
         {item.showSpotDot && (
           <div
             className="absolute top-3 left-3 w-4 h-4 rounded-full border border-black/20 shadow-xs cursor-pointer z-10 transition-transform hover:scale-110"
@@ -127,39 +141,85 @@ export const CatalogPageItem: React.FC<CatalogPageItemProps> = ({
         )}
 
         {/* Hover Action Overlay */}
-        <div className="no-print absolute inset-0 bg-stone-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3 pointer-events-none group-hover:pointer-events-auto">
-          <div className="flex items-center justify-end gap-1">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onUpdateItem({ showSpotDot: !item.showSpotDot });
-              }}
-              title="Bật/tắt chấm màu điểm nhấn"
-              className="p-1.5 rounded-md bg-white/90 text-stone-700 hover:bg-white hover:text-stone-900 text-xs shadow-sm transition-all"
-            >
-              <CircleDot className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={handleGenerateAiText}
-              disabled={isAiLoading}
-              title="Nhờ AI gợi ý text cho ảnh này"
-              className="px-2 py-1.5 rounded-md bg-red-600 text-white hover:bg-red-700 text-[11px] font-medium shadow-sm transition-all flex items-center gap-1 disabled:opacity-50"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>{isAiLoading ? "Đang tạo..." : "AI Gợi ý text"}</span>
-            </button>
+        <div className="no-print absolute inset-0 bg-stone-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2.5 pointer-events-none group-hover:pointer-events-auto">
+          <div className="flex items-center justify-between gap-1 flex-wrap">
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={onRequestCropAdjust}
+                title="Chỉnh Crop & Zoom thủ công bằng chuột hoặc thanh trượt"
+                className="px-2 py-1 rounded bg-white text-stone-800 hover:bg-stone-100 text-[11px] font-semibold shadow-xs flex items-center gap-1 transition-all"
+              >
+                <Crop className="w-3 h-3 text-red-600" />
+                <span>Crop & Zoom</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUpdateItem({
+                    zoom: 1.12,
+                    panX: 0,
+                    panY: -3,
+                    fitMode: "cover",
+                  });
+                }}
+                title="Tự động căn chỉnh ảnh vào khung chuẩn không méo"
+                className="px-1.5 py-1 rounded bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-semibold shadow-xs transition-all"
+              >
+                Tự động căn
+              </button>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUpdateItem({ showSpotDot: !item.showSpotDot });
+                }}
+                title="Bật/tắt chấm màu điểm nhấn"
+                className="p-1 rounded bg-white/90 text-stone-700 hover:bg-white text-xs shadow-xs transition-all"
+              >
+                <CircleDot className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={handleGenerateAiText}
+                disabled={isAiLoading}
+                title="Nhờ AI gợi ý text cho ảnh này"
+                className="px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 text-[11px] font-medium shadow-xs transition-all flex items-center gap-1 disabled:opacity-50"
+              >
+                <Sparkles className="w-3 h-3" />
+                <span>{isAiLoading ? "Đang tạo..." : "AI Gợi ý"}</span>
+              </button>
+            </div>
           </div>
 
-          <button
-            type="button"
-            onClick={onRequestImageChange}
-            className="w-full py-2 rounded-md bg-white/95 text-stone-800 hover:bg-white hover:text-black text-xs font-semibold shadow-md flex items-center justify-center gap-1.5 transition-all"
-          >
-            <Camera className="w-4 h-4 text-red-600" />
-            <span>Đổi hình ảnh</span>
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={onRequestImageChange}
+              className="flex-1 py-1.5 rounded bg-white/95 text-stone-800 hover:bg-white hover:text-black text-xs font-semibold shadow-md flex items-center justify-center gap-1.5 transition-all"
+            >
+              <Camera className="w-3.5 h-3.5 text-red-600" />
+              <span>Đổi hình ảnh</span>
+            </button>
+            {(zoom !== 1.0 || panX !== 0 || panY !== 0) && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUpdateItem({ zoom: 1.0, panX: 0, panY: 0, fitMode: "cover" });
+                }}
+                title="Khôi phục góc ảnh mặc định"
+                className="px-2 py-1.5 rounded bg-stone-800 text-stone-200 hover:text-white text-[10px] font-medium shadow-md"
+              >
+                Reset
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

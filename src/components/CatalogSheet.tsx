@@ -10,6 +10,7 @@ interface CatalogSheetProps {
   language: "en" | "vi";
   onUpdatePage: (updated: Partial<CatalogPage>) => void;
   onRequestImageChange: (itemIndex: number) => void;
+  onRequestCropAdjust: (itemIndex: number) => void;
 }
 
 export const CatalogSheet: React.FC<CatalogSheetProps> = ({
@@ -18,6 +19,7 @@ export const CatalogSheet: React.FC<CatalogSheetProps> = ({
   language,
   onUpdatePage,
   onRequestImageChange,
+  onRequestCropAdjust,
 }) => {
   const handleUpdateItem = (itemIndex: number, updated: Partial<ProductItem>) => {
     const newItems = [...page.items];
@@ -72,11 +74,13 @@ export const CatalogSheet: React.FC<CatalogSheetProps> = ({
             </h1>
           </div>
 
-          {/* Right Elmich Logo & Description block */}
+          {/* Right Logo Reserved Slot & Description block */}
           <div className="flex flex-col items-end text-right max-w-[38%] space-y-2">
-            {/* Elmich Official Logo (Fixed brand identity as requested) */}
-            <div className="pt-0.5">
-              <ElmichLogo size="md" />
+            {/* Reserved slot for Elmich Logo: exact dimensions and spacing preserved */}
+            <div className="w-[140px] h-[34px] flex items-center justify-end select-none">
+              <span className="no-print text-[9px] font-mono text-stone-400 border border-dashed border-stone-300 rounded px-2 py-0.5 tracking-wider">
+                [ Vị trí Logo Elmich ]
+              </span>
             </div>
 
             {/* Top right description summary */}
@@ -115,6 +119,7 @@ export const CatalogSheet: React.FC<CatalogSheetProps> = ({
               language={language}
               onUpdateItem={(updated) => handleUpdateItem(idx, updated)}
               onRequestImageChange={() => onRequestImageChange(idx)}
+              onRequestCropAdjust={() => onRequestCropAdjust(idx)}
             />
           ))}
         </div>
