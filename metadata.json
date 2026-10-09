@@ -1,0 +1,6 @@
+{
+  "name": "Elmich Product Catalog Studio",
+  "description": "Tạo trang catalogue sản phẩm Elmich tiêu chuẩn xuất khẩu, tùy chọn bố cục 3 hoặc 4 hình ảnh, AI gợi ý thông số & mô tả sản phẩm, chỉnh sửa trực tiếp và xuất file PDF.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

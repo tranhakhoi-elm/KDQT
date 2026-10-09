@@ -1,0 +1,136 @@
+import { CatalogPage } from "../types";
+
+export const SAMPLE_COOKWARE_LIBRARY = [
+  {
+    name: "Ivory Speckle Pots & Pans (Full Set)",
+    url: "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?auto=format&fit=crop&w=800&q=80",
+    tags: ["ivory", "full set", "speckle"],
+  },
+  {
+    name: "Ceramic Ivory Cookware with Wood Utensils",
+    url: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
+    tags: ["utensil", "wood", "ivory"],
+  },
+  {
+    name: "Minimalist Stone Casseroles with Glass Lid",
+    url: "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?auto=format&fit=crop&w=800&q=80",
+    tags: ["casserole", "glass lid", "neutral"],
+  },
+  {
+    name: "Copper Accent & Granite Frying Pan",
+    url: "https://images.unsplash.com/photo-1583394293214-28ded15ee548?auto=format&fit=crop&w=800&q=80",
+    tags: ["copper", "skillet", "pan"],
+  },
+  {
+    name: "Taupe Beige Kitchenware with Soft Handle",
+    url: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=800&q=80",
+    tags: ["taupe", "handle", "saucepan"],
+  },
+  {
+    name: "Grey Granite Stone Pot & Pan Set",
+    url: "https://images.unsplash.com/photo-1507048777869-2d4c06e40d95?auto=format&fit=crop&w=800&q=80",
+    tags: ["grey", "granite", "wood handle"],
+  },
+  {
+    name: "Midnight Black Cast & Speckled Griddle",
+    url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+    tags: ["black", "midnight", "griddle"],
+  },
+  {
+    name: "Scandinavian Modern Kitchen Cookware Arrangement",
+    url: "https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?auto=format&fit=crop&w=800&q=80",
+    tags: ["kitchen", "lifestyle", "pots"],
+  },
+];
+
+export const INITIAL_PAGES: CatalogPage[] = [
+  {
+    id: "page-1",
+    name: "Ivory Stone Collection (4 Ảnh)",
+    layout: 4,
+    seriesSubtitle: "WOOD-HANDLE GRANITE SERIES — NEUTRAL PALETTE",
+    collectionTitle: "Ivory Stone Collection",
+    headerDescription: "Marble-finish non-stick coating in warm ivory, paired with faux-wood soft-touch handles and tempered glass lids. Shown in four styling options / pack configurations.",
+    footerLeft: "ELMICH JSC • A LEADING COOKWARE MANUFACTURER IN VIETNAM",
+    footerCenter: "IVORY STONE COLLECTION",
+    footerPageNumber: "02",
+    items: [
+      {
+        id: "item-1-1",
+        image: "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?auto=format&fit=crop&w=800&q=80",
+        code: "IV-01 • FW26 CORE SET",
+        title: "Ivory Speckle, Full Set + Griddle",
+        description: "Includes stockpot, casseroles, saucepan, fry pans and square griddle.",
+        showSpotDot: true,
+        spotDotColor: "#e8ded2",
+      },
+      {
+        id: "item-1-2",
+        image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
+        code: "IV-02 • UTENSIL EDITION",
+        title: "Ivory Speckle, with Utensil Set",
+        description: "Cookware set bundled with matching cooking utensils.",
+        showSpotDot: true,
+        spotDotColor: "#f3ede3",
+      },
+      {
+        id: "item-1-3",
+        image: "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?auto=format&fit=crop&w=800&q=80",
+        code: "IV-03 • CLEAN LOGO-FREE",
+        title: "Ivory Smooth, Unbranded Tooling",
+        description: "Neutral tooling with no visible branding — ready for private label.",
+        showSpotDot: true,
+        spotDotColor: "#e5ded4",
+      },
+      {
+        id: "item-1-4",
+        image: "https://images.unsplash.com/photo-1583394293214-28ded15ee548?auto=format&fit=crop&w=800&q=80",
+        code: "IV-04 • COPPER INTERIOR",
+        title: "Ivory Body, Copper-Tone Interior",
+        description: "Ivory exterior finished with a warm copper-tone non-stick interior.",
+        showSpotDot: true,
+        spotDotColor: "#b87333",
+      },
+    ],
+  },
+  {
+    id: "page-2",
+    name: "Taupe, Grey & Black Stone (3 Ảnh)",
+    layout: 3,
+    seriesSubtitle: "WOOD-HANDLE GRANITE SERIES — NEUTRAL PALETTE",
+    collectionTitle: "Taupe, Grey & Black Stone",
+    headerDescription: "The same forged-aluminum granite construction extended across three additional neutral finishes for coordinated kitchen ranges.",
+    footerLeft: "ELMICH JSC • A LEADING COOKWARE MANUFACTURER IN VIETNAM",
+    footerCenter: "TAUPE, GREY & BLACK STONE",
+    footerPageNumber: "03",
+    items: [
+      {
+        id: "item-2-1",
+        image: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=800&q=80",
+        code: "TP-05 • MUSHROOM TAUPE",
+        title: "Taupe Stone, Soft-Touch Handle",
+        description: "Warm taupe finish with matching soft-touch handles and knobs.",
+        showSpotDot: true,
+        spotDotColor: "#a3988c",
+      },
+      {
+        id: "item-2-2",
+        image: "https://images.unsplash.com/photo-1507048777869-2d4c06e40d95?auto=format&fit=crop&w=800&q=80",
+        code: "GY-06 • STONE GREY",
+        title: "Grey Stone, Wood-Tone Handle",
+        description: "Speckled grey granite coating with faux-wood handles.",
+        showSpotDot: true,
+        spotDotColor: "#7f7f7f",
+      },
+      {
+        id: "item-2-3",
+        image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+        code: "BK-07 • MIDNIGHT SPECKLE",
+        title: "Black Stone, Wood-Tone Handle",
+        description: "Deep black speckled finish; griddle, fry pan and stockpot configurations.",
+        showSpotDot: true,
+        spotDotColor: "#2b2b2b",
+      },
+    ],
+  },
+];
