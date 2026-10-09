@@ -262,9 +262,12 @@ export default function App() {
     }
   };
 
-  // Native Print
+  // Native Print-to-PDF matching Ctrl+P 100%
   const handlePrintNative = () => {
-    window.print();
+    showToast("Đang mở hộp thoại in. Chọn máy in 'Lưu dưới dạng PDF' (Save as PDF) để lưu vector chuẩn 100%!", "info");
+    setTimeout(() => {
+      window.print();
+    }, 250);
   };
 
   return (

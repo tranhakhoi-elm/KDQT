@@ -173,25 +173,28 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           </button>
 
           {/* PDF Export Action */}
-          <div className="flex items-center gap-1 pl-1 border-l border-stone-200">
+          <div className="flex items-center gap-1.5 pl-1 border-l border-stone-200">
+            {/* Primary: Native Print-to-PDF matching Ctrl+P 100% */}
+            <button
+              type="button"
+              onClick={onPrintNative}
+              className="px-3.5 py-1.5 text-xs font-semibold bg-stone-900 hover:bg-black text-white rounded-lg shadow-sm flex items-center gap-1.5 transition-all"
+              title="Xuất file PDF giữ nguyên 100% font chữ, khoảng cách dãn chữ, dãn dòng y hệt lệnh Ctrl+P trên trình duyệt (Chọn Lưu dưới dạng PDF)"
+            >
+              <Printer className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Lưu PDF (Chuẩn Ctrl+P / Vector)</span>
+            </button>
+
+            {/* Secondary: Direct jsPDF 300 DPI file download */}
             <button
               type="button"
               onClick={onExportPdf}
               disabled={isExportingPdf}
-              className="px-3.5 py-1.5 text-xs font-semibold bg-stone-900 hover:bg-black text-white rounded-lg shadow-xs flex items-center gap-1.5 transition-all disabled:opacity-50"
-              title="Xuất file PDF giữ nguyên text vector (mở và sửa text trong Adobe Illustrator/Acrobat) & ảnh 300 DPI"
+              className="px-2.5 py-1.5 text-xs font-medium text-stone-700 bg-stone-100 hover:bg-stone-200 rounded-lg flex items-center gap-1.5 border border-stone-200 transition-colors disabled:opacity-50"
+              title="Tải trực tiếp file PDF Vector 300 DPI về máy tính không qua hộp thoại in"
             >
-              <Download className="w-3.5 h-3.5 text-red-400" />
-              <span>{isExportingPdf ? "Đang xuất..." : "Lưu PDF (300 DPI)"}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={onPrintNative}
-              className="p-2 text-stone-600 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 rounded-lg transition-colors border border-stone-200"
-              title="In / Lưu Vector PDF Trình duyệt (A4 Landscape 300 DPI)"
-            >
-              <Printer className="w-4 h-4" />
+              <Download className="w-3.5 h-3.5 text-stone-500" />
+              <span className="hidden sm:inline">{isExportingPdf ? "Đang xuất..." : "Tải jsPDF"}</span>
             </button>
           </div>
         </div>

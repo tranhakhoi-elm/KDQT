@@ -564,3 +564,5 @@ if (process.env.NODE_ENV !== "production") {
 app.listen(port, "0.0.0.0", () => {
   console.log(`Elmich Catalog Studio server running on http://0.0.0.0:${port}`);
 });
+
+export default app;

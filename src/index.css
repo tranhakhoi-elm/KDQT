@@ -60,12 +60,34 @@
   border-radius: 2px;
 }
 
-/* Print CSS for 100% Vector Print-to-PDF */
+/* Print CSS for 100% Vector Print-to-PDF (Identical to Ctrl+P) */
 @media print {
-  body {
-    background-color: transparent !important;
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  html, body {
+    background-color: #FAF7F2 !important;
     padding: 0 !important;
     margin: 0 !important;
+    width: 297mm !important;
+    height: 210mm !important;
+    overflow: hidden !important;
+  }
+
+  #root, #root > div {
+    background-color: #FAF7F2 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    height: 210mm !important;
   }
 
   .no-print {
@@ -74,17 +96,23 @@
 
   .print-page {
     box-shadow: none !important;
-    margin: 0 !important;
-    page-break-after: always;
-    page-break-inside: avoid;
+    border: none !important;
+    border-radius: 0 !important;
+    margin: 0 auto !important;
     width: 297mm !important;
     height: 210mm !important;
-    max-width: none !important;
-    max-height: none !important;
-  }
-
-  @page {
-    size: A4 landscape;
-    margin: 0;
+    min-height: 210mm !important;
+    max-width: 297mm !important;
+    max-height: 210mm !important;
+    box-sizing: border-box !important;
+    padding: 14mm 16mm 10mm 16mm !important;
+    background-color: #FAF7F2 !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
   }
 }
